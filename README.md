@@ -1,2 +1,2 @@
-# Data_gold_mine
+# datasciencecoursera
 My first repository
