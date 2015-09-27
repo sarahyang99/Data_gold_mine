@@ -1,0 +1,103 @@
+1. Get the data
+After downloaded training and testing data to work directory, load the data into R and to get familiar with the data.
+> pml_training_data = read.table("pml-training.csv",header=TRUE,sep=",")
+> dim(pml_training_data)
+[1] 19622   160
+> head(pml_training_data)
+Screen important variables, found many of them have missing value, and feel those sensor related variables should be included into the model. They are variables whose name include belt, arm, dumbbell and forearm. The variables like user_name, raw_timestamp_part_n, cvtd_timestamp, new_window, num_window can be ignored so far, if the model needs more variables later on, will consider adding them back to the model.
+
+2. Select variables.
+> keysensorVars=grep(pattern="_belt|_arm|_dumbbell|_forearm",names(pml_training_data))
+Got 152 variables.
+> keysensorVars
+  [1]   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34  35
+ [29]  36  37  38  39  40  41  42  43  44  45  46  47  48  49  50  51  52  53  54  55  56  57  58  59  60  61  62  63
+ [57]  64  65  66  67  68  69  70  71  72  73  74  75  76  77  78  79  80  81  82  83  84  85  86  87  88  89  90  91
+ [85]  92  93  94  95  96  97  98  99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119
+[113] 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147
+[141] 148 149 150 151 152 153 154 155 156 157 158 159
+> pml_training_new=pml_training_data[,c(keysensorVars,160)]
+> dim(pml_training_new)
+[1] 19622   153
+
+3. Check missing data
+> NAData= is.na(pml_training_new)
+> subVars=which(colSums(NAData)>19000)
+> newdata=pml_training_new[,-subVars]
+> dim(newdata)
+[1] 19622    86
+> head(newdata) 
+Saw many variables are still with missing values.
+Use newdata[41:49] <- list(NULL) syntax to remove those columns with missing values manually and get the newdata with dimension of 19622 (rows), 51(columns).
+
+4. Splitting the data into Training and testing
+ > library(caret)
+Loading required package: lattice
+Loading required package: ggplot2
+ > inTrain <- createDataPartition(y=newdata$classe, p=0.75, list=FALSE)
+> training <- newdata[inTrain,]
+> dim(training)
+[1] 14718    51
+> testing <- newdata[-inTrain,]
+> dim(testing)
+[1] 4904   51
+
+5. Build a prediction model using randomForest function.
+> (randForest=randomForest(classe~.,data=training,ntree=500))
+
+Call:
+ randomForest(formula = classe ~ ., data = training, ntree = 500) 
+               Type of random forest: classification
+                     Number of trees: 500
+No. of variables tried at each split: 7
+
+        OOB estimate of  error rate: 0.52%
+Confusion matrix:
+     A    B    C    D    E  class.error
+A 4181    2    0    1    1 0.0009557945
+B   13 2831    4    0    0 0.0059691011
+C    0   14 2551    2    0 0.0062329568
+D    0    0   30 2380    2 0.0132669983
+E    0    0    3    5 2698 0.0029563932
+
+The OOB estimate of error rate is really low and the classification looks ideal.
+
+6. Test the Model with testing samples.
+ 
+ > predictionTesting=predict(randForest, newdata=testing)
+> confusionMatrix(predictionTesting, testing$classe)
+Confusion Matrix and Statistics
+
+          Reference
+Prediction    A    B    C    D    E
+         A 1395    2    0    0    0
+         B    0  945    7    0    0
+         C    0    2  846    3    0
+         D    0    0    2  800    3
+         E    0    0    0    1  898
+
+Overall Statistics
+                                          
+               Accuracy : 0.9959          
+                 95% CI : (0.9937, 0.9975)
+    No Information Rate : 0.2845          
+    P-Value [Acc > NIR] : < 2.2e-16       
+                                          
+                  Kappa : 0.9948          
+ Mcnemar's Test P-Value : NA              
+
+Statistics by Class:
+
+                     Class: A Class: B Class: C Class: D Class: E
+Sensitivity            1.0000   0.9958   0.9895   0.9950   0.9967
+Specificity            0.9994   0.9982   0.9988   0.9988   0.9998
+Pos Pred Value         0.9986   0.9926   0.9941   0.9938   0.9989
+Neg Pred Value         1.0000   0.9990   0.9978   0.9990   0.9993
+Prevalence             0.2845   0.1935   0.1743   0.1639   0.1837
+Detection Rate         0.2845   0.1927   0.1725   0.1631   0.1831
+Detection Prevalence   0.2849   0.1941   0.1735   0.1642   0.1833
+Balanced Accuracy      0.9997   0.9970   0.9941   0.9969   0.9982
+
+Since the accuracy and Kappa look good, we believe the predictor should have a low OOB error rate.
+
+
