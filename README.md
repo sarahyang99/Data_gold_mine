@@ -13,16 +13,17 @@ The data for this project come from this source: http://groupware.les.inf.puc-ri
 #Project Procedures:
 
 #Getting the Data
-UrlTrain <- "http://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
-UrlTest <- http://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv
-training <- read.csv(url(UrlTrain), na.strings=c("NA","#DIV/0!",""))
-testing <- read.csv(url(UrlTest), na.strings=c("NA","#DIV/0!",""))
+download the data from URL and store them on disk
 
-#Clean the Data-Remove unwanted variables(#DIV/0!,NA & empty values) for both training and testing(for details to see code.R)
-subTrain <- training[,names(training)[!(nzv(training,saveMetrics=T)[,4])]] 
-subTrain <- subTrain[,names(subTrain)[sapply(subTrain,function(x)!(any(is.na(x)|x=="")))]]
-subTrain <- subTrain[,-1]
-subTrain <- subTrain[,c(1:3,5:58)]
+#Clean the Data-Remove unwanted variables
+variables reduced from 160 to 57 for both training and testing data.
+
+#Partitioning Training data set
+inTrain <- createDataPartition(subTrain$classe, p = 0.6, list = FALSE)
+subTraining <- subTrain[inTrain,]
+subValidation <- subTrain[-inTrain,]
+
+
 
 
 
