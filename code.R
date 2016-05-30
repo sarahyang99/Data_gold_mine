@@ -52,17 +52,20 @@ confusionMatrix(predictions2, subValidation$classe)
 
 predictions3 <- predict(modFit2, testing, type="class")
 
+predictions3
+#this step will get the prediction result for the 20 testing cases.
+
 #generate files to submit assignment
 
 pml_write_files = function(x){
-+   n = length(x)
-+   for(i in 1:n){
-+     filename = paste0("problem_id_",i,".txt")
-+     write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
-+   }
-+ }
+   n = length(x)
+   for(i in 1:n){
+     filename = paste0("problem_id_",i,".txt")
+     write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+   }
+ }
 
-pml_write_files(prediction3)
+pml_write_files(predictions3)
 
 
 
