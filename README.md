@@ -27,10 +27,7 @@ At this step, SubTraining data set got 11776 observations for 57 variables while
 
 #Modeling:Decision Tree & Random Forest
 
-modFit <- rpart(classe ~., data=subTraining, method="class")
-fancyRpartPlot(modFit)
-predictions <- predict(modFit,subValidation,type="class")
-confusionMatrix(predictions,subValidation$classe)
+Finally use Random Forest model to predict test cases.
 
 
 
