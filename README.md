@@ -23,6 +23,14 @@ inTrain <- createDataPartition(subTrain$classe, p = 0.6, list = FALSE)
 subTraining <- subTrain[inTrain,]
 subValidation <- subTrain[-inTrain,]
 
+At this step, SubTraining data set got 11776 observations for 57 variables while subValidation got 7846 observations for 57 variables.
+
+#Modeling A.Decision Tree B.Random Forest
+modFit <- rpart(classe ~., data=subTraining, method="class")
+fancyRpartPlot(modFit)
+predictions <- predict(modFit,subValidation,type="class")
+confusionMatrix(predictions,subValidation$classe)
+
 
 
 
