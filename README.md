@@ -25,38 +25,14 @@ subValidation <- subTrain[-inTrain,]
 
 At this step, SubTraining data set got 11776 observations for 57 variables while subValidation got 7846 observations for 57 variables.
 
-#Modeling:Decision Tree and Random Forest will be used for prediction
-Confusion Matrix and Statistics
+#Modeling:Decision Tree & Random Forest
 
-          Reference
-Prediction    A    B    C    D    E
-         A 2087  154   16   48   72
-         B   78 1098   40   18  102
-         C    8   56 1176   71  108
-         D   55  112   36 1048   98
-         E    4   98  100  101 1062
+modFit <- rpart(classe ~., data=subTraining, method="class")
+fancyRpartPlot(modFit)
+predictions <- predict(modFit,subValidation,type="class")
+confusionMatrix(predictions,subValidation$classe)
 
-Overall Statistics
-                                          
-               Accuracy : 0.8248          
-                 95% CI : (0.8162, 0.8331)
-    No Information Rate : 0.2845          
-    P-Value [Acc > NIR] : < 2.2e-16       
-                                          
-                  Kappa : 0.7779          
- Mcnemar's Test P-Value : < 2.2e-16       
 
-Statistics by Class:
-
-                     Class: A Class: B Class: C Class: D Class: E
-Sensitivity            0.9350   0.7233   0.8596   0.8149   0.7365
-Specificity            0.9483   0.9624   0.9625   0.9541   0.9527
-Pos Pred Value         0.8780   0.8219   0.8288   0.7769   0.7780
-Neg Pred Value         0.9735   0.9355   0.9701   0.9634   0.9414
-Prevalence             0.2845   0.1935   0.1744   0.1639   0.1838
-Detection Rate         0.2660   0.1399   0.1499   0.1336   0.1354
-Detection Prevalence   0.3030   0.1703   0.1809   0.1719   0.1740
-Balanced Accuracy      0.9417   0.8429   0.9111   0.8845   0.8446
 
 
 
