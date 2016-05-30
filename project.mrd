@@ -1,15 +1,15 @@
-Coursera Machine Learning Project
+#Coursera Machine Learning Project
 
 Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: http://groupware.les.inf.puc-rio.br/har (see the section on the Weight Lifting Exercise Dataset).
 
-Get data from URL and then save them:
+#Get data from URL and then save them:
 
 UrlTrain <- "http://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
 UrlTest <- http://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv
 training <- read.csv(url(UrlTrain), na.strings=c("NA","#DIV/0!",""))
 testing <- read.csv(url(UrlTest), na.strings=c("NA","#DIV/0!",""))
 
-Data Clearning-Remove unwanted variables, remove variables with #DIV/0! and empty values.
+#Data Clearning-Remove unwanted variables, remove variables with #DIV/0! and empty values.
 
 subTrain <- training[,names(training)[!(nzv(training,saveMetrics=T)[,4])]] 
 subTrain <- subTrain[,names(subTrain)[sapply(subTrain,function(x)!(any(is.na(x)|x=="")))]]
@@ -18,7 +18,7 @@ subTrain <- subTrain[,c(1:3,5:58)]
 
 then do the samething for testing data set.
 
-Separate the data to be used for Cross Validation
+#Separate the data to be used for Cross Validation
 
 inTrain <- createDataPartition(subTrain$classe, p = 0.6, list = FALSE)
 subTraining <- subTrain[inTrain,]
@@ -26,7 +26,7 @@ subValidation <- subTrain[-inTrain,]
 
 At this step, SubTraining data set got 11776 observations for 57 variables while subValidation got 7846 observations for 57 variables.
 
-Prediction Modeling: 
+#Prediction Modeling: 
 A:	Using Decision Tree for prediction:
 modFit <- rpart(classe ~., data=subTraining, method="class")
 fancyRpartPlot(modFit)
@@ -34,13 +34,12 @@ predictions <- predict(modFit,subValidation,type="class")
 confusionMatrix(predictions,subValidation$classe)
 
 
-
 B:  Using Random Forests algorithms for prediction:
 modFit2 <- randomForest(classe ~., data=subTraining)
 predictions2 <- predict(modFit2,subValidation, type="class")
 confusionMatrix(predictions2, subValidation$classe)
 
-Result: Random Forests generated better prediction result, therefore, will use Random Forest to predict 20 testing cases.
+#Result: Random Forests generated better prediction result, therefore, will use Random Forest to predict 20 testing cases.
 
 
 
