@@ -113,5 +113,9 @@ Balanced Accuracy      0.9994   0.9977   0.9995   0.9973   0.9983
 
 predictions3 <- predict(modFit2, testing, type="class")
 
+predictions3
+
+#This step will get the prediction result for the 20 testing cases.
+
 
 
