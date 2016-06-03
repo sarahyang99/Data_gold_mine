@@ -44,9 +44,9 @@ confusionMatrix(predictions,subValidation$classe)
 
 #Prediction-using Random Forest
 
-modFit2 <- randomForest(classe ~., data=subTraining)
-predictions2 <- predict(modFit2,subValidation, type="class")
-confusionMatrix(predictions2, subValidation$classe)
+modFit2 <- train(subTraining$classe~., method = "rf", preProcess=c("pca"), trControl = trainControl(method = "cv", number=10), data=subTraining)
+cm <- confusionMatrix(subValidation$classe, predict(modFit2, subValidation))
+cm
 
 #Using modFit2 to predict 20 testing cases
 
