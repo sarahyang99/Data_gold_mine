@@ -42,7 +42,7 @@ fancyRpartPlot(modFit)
 predictions <- predict(modFit,subValidation,type="class")
 confusionMatrix(predictions,subValidation$classe)
 
-#Prediction-using Random Forest
+#Prediction-using Random Forest and 10-fold cross validation
 
 modFit2 <- train(subTraining$classe~., method = "rf", preProcess=c("pca"), trControl = trainControl(method = "cv", number=10), data=subTraining)
 cm <- confusionMatrix(subValidation$classe, predict(modFit2, subValidation))
